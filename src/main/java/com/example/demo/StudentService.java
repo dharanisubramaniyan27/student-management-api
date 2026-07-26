@@ -20,23 +20,22 @@ public class StudentService {
     }
 
     public StudentDetails getStudentById(int id) {
-        return repository.findById(id).orElse(null);
+        return repository.findById(id)
+                .orElseThrow(() -> new StudentNotFoundException(id));
     }
+
     public StudentDetails updateStudent(int id, StudentDetails updatedStudent) {
-        StudentDetails existing = repository.findById(id).orElse(null);
-        if (existing == null) {
-            return null;
-        }
+        StudentDetails existing = repository.findById(id)
+                .orElseThrow(() -> new StudentNotFoundException(id));
         existing.setName(updatedStudent.getName());
         existing.setEmail(updatedStudent.getEmail());
         return repository.save(existing);
     }
 
-    public boolean deleteStudent(int id) {
+    public void deleteStudent(int id) {
         if (!repository.existsById(id)) {
-            return false;
+            throw new StudentNotFoundException(id);
         }
         repository.deleteById(id);
-        return true;
     }
 }

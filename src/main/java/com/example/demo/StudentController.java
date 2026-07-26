@@ -1,6 +1,8 @@
 package com.example.demo;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,7 +15,7 @@ public class StudentController {
     private StudentService service;
 
     @PostMapping
-    public StudentDetails addStudent(@RequestBody StudentDetails student) {
+    public StudentDetails addStudent(@Valid @RequestBody StudentDetails student) {
         return service.createStudent(student);
     }
 
@@ -26,14 +28,15 @@ public class StudentController {
     public StudentDetails getStudent(@PathVariable int id) {
         return service.getStudentById(id);
     }
+
     @PutMapping("/{id}")
-    public StudentDetails updateStudent(@PathVariable int id, @RequestBody StudentDetails student) {
+    public StudentDetails updateStudent(@PathVariable int id, @Valid @RequestBody StudentDetails student) {
         return service.updateStudent(id, student);
     }
 
     @DeleteMapping("/{id}")
-    public String deleteStudent(@PathVariable int id) {
-        boolean deleted = service.deleteStudent(id);
-        return deleted ? "Student deleted successfully" : "Student not found";
+    public ResponseEntity<String> deleteStudent(@PathVariable int id) {
+        service.deleteStudent(id);
+        return ResponseEntity.ok("Student deleted successfully");
     }
 }
